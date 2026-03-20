@@ -1,0 +1,111 @@
+version: '3.8'
+
+services:
+
+  api-gateway:
+    image: nginx:alpine
+    container_name: api_gateway
+    ports:
+      - "80:80"
+    volumes:
+      - ./gateway/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - gateway-net
+    depends_on:
+      - ms-facultades
+      - ms-investigadores
+      - ms-investigaciones
+
+  ms-facultades:
+    build: ./ms-facultades
+    container_name: ms_facultades
+    environment:
+      - DATASOURCES_DEFAULT_URL=jdbc:postgresql://db-facultades:5432/facultades_db
+      - DATASOURCES_DEFAULT_USERNAME=user_admin
+      - DATASOURCES_DEFAULT_PASSWORD=pass_secret
+      - DATASOURCES_DEFAULT_DRIVER_CLASS_NAME=org.postgresql.Driver
+    networks:
+      - gateway-net
+      - db-facultades-net
+    depends_on:
+      - db-facultades
+
+  db-facultades:
+    image: postgres:15-alpine
+    container_name: db_facultades
+    environment:
+      - POSTGRES_DB=facultades_db
+      - POSTGRES_USER=user_admin
+      - POSTGRES_PASSWORD=pass_secret
+    volumes:
+      - data-facultades:/var/lib/postgresql/data
+      - ./db-init/facultades:/docker-entrypoint-initdb.d:ro
+    networks:
+      - db-facultades-net
+
+  ms-investigadores:
+    build: ./ms-investigadores
+    container_name: ms_investigadores
+    environment:
+      - DATASOURCES_DEFAULT_URL=jdbc:postgresql://db-investigadores:5432/investigadores_db
+      - DATASOURCES_DEFAULT_USERNAME=user_admin
+      - DATASOURCES_DEFAULT_PASSWORD=pass_secret
+    networks:
+      - gateway-net
+      - db-investigadores-net
+    depends_on:
+      - db-investigadores
+
+  db-investigadores:
+    image: postgres:15-alpine
+    container_name: db_investigadores
+    environment:
+      - POSTGRES_DB=investigadores_db
+      - POSTGRES_USER=user_admin
+      - POSTGRES_PASSWORD=pass_secret
+    volumes:
+      - data-investigadores:/var/lib/postgresql/data
+      - ./db-init/investigadores:/docker-entrypoint-initdb.d:ro
+    networks:
+      - db-investigadores-net
+
+  ms-investigaciones:
+    build: ./ms-investigaciones
+    container_name: ms_investigaciones
+    environment:
+      - DATASOURCES_DEFAULT_URL=jdbc:postgresql://db-investigaciones:5432/investigaciones_db
+      - DATASOURCES_DEFAULT_USERNAME=user_admin
+      - DATASOURCES_DEFAULT_PASSWORD=pass_secret
+    networks:
+      - gateway-net
+      - db-investigaciones-net
+    depends_on:
+      - db-investigaciones
+
+  db-investigaciones:
+    image: postgres:15-alpine
+    container_name: db_investigaciones
+    environment:
+      - POSTGRES_DB=investigaciones_db
+      - POSTGRES_USER=user_admin
+      - POSTGRES_PASSWORD=pass_secret
+    volumes:
+      - data-investigaciones:/var/lib/postgresql/data
+      - ./db-init/investigaciones:/docker-entrypoint-initdb.d:ro
+    networks:
+      - db-investigaciones-net
+
+networks:
+  gateway-net:
+    driver: bridge
+  db-facultades-net:
+    internal: true
+  db-investigadores-net:
+    internal: true
+  db-investigaciones-net:
+    internal: true
+
+volumes:
+  data-facultades:
+  data-investigadores:
+  data-investigaciones:
