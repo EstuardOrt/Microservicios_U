@@ -25,6 +25,7 @@ dependencies {
     ksp("io.micronaut.serde:micronaut-serde-processor")
     ksp("io.micronaut.validation:micronaut-validation-processor")
     implementation("io.micronaut:micronaut-http-client")
+    implementation("io.micronaut.data:micronaut-data-jpa")
     implementation("io.micronaut.data:micronaut-data-hibernate-jpa")
     implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
     implementation("io.micronaut.serde:micronaut-serde-jackson")
