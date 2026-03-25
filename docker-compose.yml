@@ -11,7 +11,7 @@ services:
       - gateway-net
     depends_on:
       - ms-facultades
-      #- ms-investigadores
+      - ms-investigadores
       #- ms-investigaciones
 
   ms-facultades:
@@ -43,30 +43,37 @@ services:
       - db-facultades-net
 
   ms-investigadores:
-    build: ./ms-investigadores
-    container_name: ms_investigadores
-    environment:
-      - DATASOURCES_DEFAULT_URL=jdbc:postgresql://db-investigadores:5432/investigadores_db
-      - DATASOURCES_DEFAULT_USERNAME=user_admin
-      - DATASOURCES_DEFAULT_PASSWORD=pass_secret
-    networks:
-      - gateway-net
-      - db-investigadores-net
-    depends_on:
-      - db-investigadores
+      build: ./ms-investigadores
+      container_name: ms_investigadores
+      environment:
+        - DATASOURCES_DEFAULT_URL=jdbc:postgresql://db-investigadores:5432/investigadores_db
+        - DATASOURCES_DEFAULT_USERNAME=user_admin
+        - DATASOURCES_DEFAULT_PASSWORD=pass_secret
+        - DATASOURCES_DEFAULT_DRIVER_CLASS_NAME=org.postgresql.Driver
+      networks:
+        - gateway-net
+        - db-investigadores-net
+      depends_on:
+        db-investigadores:
+          condition: service_healthy
 
   db-investigadores:
-    image: postgres:15-alpine
-    container_name: db_investigadores
-    environment:
-      - POSTGRES_DB=investigadores_db
-      - POSTGRES_USER=user_admin
-      - POSTGRES_PASSWORD=pass_secret
-    volumes:
-      - data-investigadores:/var/lib/postgresql/data
-      - ./db-init/investigadores:/docker-entrypoint-initdb.d:ro
-    networks:
-      - db-investigadores-net
+      image: postgres:15-alpine
+      container_name: db_investigadores
+      environment:
+        - POSTGRES_DB=investigadores_db
+        - POSTGRES_USER=user_admin
+        - POSTGRES_PASSWORD=pass_secret
+      volumes:
+        - data-investigadores:/var/lib/postgresql/data
+        - ./db-init/investigadores:/docker-entrypoint-initdb.d:ro
+      networks:
+        - db-investigadores-net
+      healthcheck:
+        test: ["CMD-SHELL", "pg_isready -U user_admin -d investigadores_db"]
+        interval: 10s
+        timeout: 5s
+        retries: 5
 
   ms-investigaciones:
     build: ./ms-investigaciones
