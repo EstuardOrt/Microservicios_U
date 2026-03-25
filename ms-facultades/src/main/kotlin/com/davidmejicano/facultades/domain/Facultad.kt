@@ -1,5 +1,6 @@
 package com.davidmejicano.facultades.domain
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import io.micronaut.serde.annotation.Serdeable
 import jakarta.persistence.*
 
@@ -12,7 +13,7 @@ class Facultad(
     var id: Long? = null,
 
     @Column(nullable = false, length = 150)
-    var nombre: String,
+    var nombre: String = "", 
 
     @Column(length = 15)
     var siglas: String? = null,
@@ -26,6 +27,7 @@ class Facultad(
     @Column(length = 100)
     var correo: String? = null,
 
-    @OneToMany(mappedBy = "facultad", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "facultad", cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
+    @JsonIgnoreProperties("facultad") 
     var carreras: MutableList<Carrera> = mutableListOf()
 )
