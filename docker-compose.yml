@@ -12,7 +12,7 @@ services:
     depends_on:
       - ms-facultades
       - ms-investigadores
-      #- ms-investigaciones
+      - ms-investigaciones 
 
   ms-facultades:
     build: ./ms-facultades
@@ -81,13 +81,14 @@ services:
     environment:
       - DATASOURCES_DEFAULT_URL=jdbc:postgresql://db-investigaciones:5432/investigaciones_db
       - DATASOURCES_DEFAULT_USERNAME=user_admin
-      - DATASOURCES_DEFAULT_PASSWORD=pass_secret
+      - DATASOURCES_DEFAULT_PASSWORD=pass_secret 
+      - DATASOURCES_DEFAULT_DRIVER_CLASS_NAME=org.postgresql.Driver
     networks:
       - gateway-net
       - db-investigaciones-net
     depends_on:
-      - db-investigaciones
-
+      db-investigaciones:
+        condition: service_healthy 
   db-investigaciones:
     image: postgres:15-alpine
     container_name: db_investigaciones
@@ -100,6 +101,11 @@ services:
       - ./db-init/investigaciones:/docker-entrypoint-initdb.d:ro
     networks:
       - db-investigaciones-net
+    healthcheck: 
+      test: ["CMD-SHELL", "pg_isready -U user_admin -d investigaciones_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 networks:
   gateway-net:
