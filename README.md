@@ -93,10 +93,13 @@ Registra a un nuevo investigador permitiendo la inclusión simultánea de sus t�
       "telefono": "22223333",
       "celular": "44445555",
       "direccion": "San José Pinula",
+      "municipioNacimiento": "Guatemala",
+      "departamentoNacimiento": "Guatemala",
+      "fechaNacimiento": "1990-05-15",
       "titulos": [
         {
-          "nombre": "Ingeniero en Sistemas",
-          "universidad": "UDV"
+          "nivelAcademico": "Licenciatura",
+          "nombreTitulo": "Ingeniero en Sistemas"
         }
       ]
     }
@@ -105,7 +108,7 @@ Registra a un nuevo investigador permitiendo la inclusión simultánea de sus t�
     ```bash
     curl -X POST http://localhost/investigadores \
     -H "Content-Type: application/json" \
-    -d '{"nombres": "Pedro", "apellidos": "Paredes", "cui": "1000200030101", "correo": "dParedes@investigacion.edu", "facultadId": 1, "areaCientifica": "Blockchain", "telefono": "22223333", "celular": "44445555", "direccion": "San José Pinula", "titulos": [{"nombre": "Ingeniero en Sistemas", "universidad": "UDV"}]}'
+    -d '{"nombres": "Pedro", "apellidos": "Paredes", "cui": "1000200030101", "correo": "dParedes@investigacion.edu", "facultadId": 1, "areaCientifica": "Blockchain", "telefono": "22223333", "celular": "44445555", "direccion": "San José Pinula", "titulos": [{"nivelAcademico": "Licenciatura", "nombreTitulo": "Ingeniero en Sistemas"}]}'
     ```
 
 #### Búsqueda de investigador por CUI
@@ -121,15 +124,15 @@ Permite registrar nuevas acreditaciones académicas a un investigador existente.
 * **Postman:** Método `POST` a `http://localhost/investigadores/cui/1000200030101/titulos`. **Body (JSON)**:
     ```json
     {
-      "nombre": "Maestría en Seguridad Informática",
-      "universidad": "Universidad de San Carlos"
+      "nivelAcademico": "Maestría",
+      "nombreTitulo": "Seguridad Informática"
     }
     ```
 * **cURL:**
     ```bash
     curl -X POST http://localhost/investigadores/cui/1000200030101/titulos \
     -H "Content-Type: application/json" \
-    -d '{"nombre": "Maestría en Seguridad Informática", "universidad": "Universidad de San Carlos"}'
+    -d '{"nivelAcademico": "Maestría", "nombreTitulo": "Seguridad Informática"}'
     ```
 
 ---
@@ -150,8 +153,7 @@ Inicia un nuevo proyecto definiendo al responsable y al equipo de colaboradores.
       "investigadorResponsableId": 1,
       "equipoTrabajo": [
         {
-          "investigadorAsociadoId": 2,
-          "rol": "Analista Técnico"
+          "investigadorAsociadoId": 2
         }
       ]
     }
@@ -160,7 +162,7 @@ Inicia un nuevo proyecto definiendo al responsable y al equipo de colaboradores.
     ```bash
     curl -X POST http://localhost/investigaciones \
     -H "Content-Type: application/json" \
-    -d '{"titulo": "Arquitectura Blockchain en Guatemala", "fechaRealizacion": "2026-04-16", "duracion": "18 meses", "facultadId": 1, "investigadorResponsableId": 1, "equipoTrabajo": [{"investigadorAsociadoId": 2, "rol": "Analista Técnico"}]}'
+    -d '{"titulo": "Arquitectura Blockchain en Guatemala", "fechaRealizacion": "2026-04-16", "duracion": "18 meses", "facultadId": 1, "investigadorResponsableId": 1, "equipoTrabajo": [{"investigadorAsociadoId": 2}]}'
     ```
 
 #### Búsqueda filtrada de proyectos
@@ -178,24 +180,23 @@ Integra nuevos colaboradores a un proyecto de investigación vigente.
 * **Postman:** Método `POST` a `http://localhost/investigaciones/1/equipo`. **Body (JSON)**:
     ```json
     {
-      "investigadorAsociadoId": 3,
-      "rol": "Asistente de Investigación"
+      "investigadorAsociadoId": 3
     }
     ```
 * **cURL:**
     ```bash
     curl -X POST http://localhost/investigaciones/1/equipo \
     -H "Content-Type: application/json" \
-    -d '{"investigadorAsociadoId": 3, "rol": "Asistente de Investigación"}'
+    -d '{"investigadorAsociadoId": 3}'
     ```
 
 ---
 
 ## Recomendaciones de Uso
 
-1.  **Protocolo:** Se debe verificar que la acción HTTP (GET, POST, PUT, DELETE) sea la correcta según la operación requerida.
-2.  **Formato de Datos:** El sistema requiere obligatoriamente el encabezado `Content-Type: application/json` para cualquier envío de información en el cuerpo de la petición.
-3.  **Identificadores:** Los valores representados como `/1` en los ejemplos deben sustituirse por el ID real del registro que se desea afectar.
+1. **Protocolo:** Se debe verificar que la acción HTTP (GET, POST, PUT, DELETE) sea la correcta según la operación requerida.
+2. **Formato de Datos:** El sistema requiere obligatoriamente el encabezado `Content-Type: application/json` para cualquier envío de información en el cuerpo de la petición.
+3. **Identificadores:** Los valores representados como `/1` en los ejemplos deben sustituirse por el ID real del registro que se desea afectar.
 
 ---
 
